@@ -1,0 +1,4 @@
+﻿  MyForm.cpp
+C:\Users\yuya tagami\source\repos\MHDB_prototype01\MHDB_prototype01\MyForm.h(1204,19): warning C4101:  'checkData2': ローカル変数は 1 度も使われていません。
+  MyForm.obj : MSIL モジュールが見つかりました。MSIL ではインクリメンタル リンクは無効化されています。フル リンクを行います
+  MHDB_prototype01.vcxproj -> C:\Users\yuya tagami\source\repos\MHDB_prototype01\x64\Debug\MHDB_prototype01.exe
