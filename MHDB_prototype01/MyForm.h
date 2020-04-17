@@ -3,7 +3,10 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <map>
 #include <msclr/marshal_cppstd.h>
+
+using namespace MySql::Data::MySqlClient;
 
 namespace MHDBprototype01 {
 
@@ -13,7 +16,11 @@ namespace MHDBprototype01 {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::Collections::Generic;
 
+	/**************************************************************************************************
+	||||||||||||||||||||||||||||||||||||||定数定義||||||||||||||||||||||||||||||||||||||||||||||||||||
+	**************************************************************************************************/
 	const int v1 = 1;
 	const int v2 = 2;
 	const int v3 = 3;
@@ -28,12 +35,8 @@ namespace MHDBprototype01 {
 		int jobResult = 3;
 		int hobResult = 3;
 		int exerResult = 3;
-		wchar_t memoResult[300] = { 0 };
-		std::string p;
 	}HDBV;
 	HDBV hdbv;
-	std::string GW_Date;
-	std::string GW_CurrentDate;
 
 	/// <summary>
 	/// MyForm の概要
@@ -137,10 +140,14 @@ namespace MHDBprototype01 {
 
 
 	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chart1;
-	private: System::Windows::Forms::Label^ label8;
-	private: System::Windows::Forms::Label^ label7;
-	private: System::Windows::Forms::Button^ button2;
-	private: System::Windows::Forms::Button^ button1;
+	private: System::Windows::Forms::Label^ label_avgMan;
+
+	private: System::Windows::Forms::Label^ label_maxMan;
+
+	private: System::Windows::Forms::Button^ buttonNext;
+	private: System::Windows::Forms::Button^ buttonBack;
+
+
 	private: System::Windows::Forms::Label^ labelCarentDate;
 
 	private: System::Windows::Forms::Label^ ExRes;
@@ -164,6 +171,54 @@ namespace MHDBprototype01 {
 	private: System::Windows::Forms::Label^ labelToday;
 
 	private: System::Windows::Forms::Label^ label6;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	private: System::Windows::Forms::Button^ buttonsqltest;
+	private: System::Windows::Forms::DataGridView^ dataGridView1;
+
+
+
+
+
+
+
+
 
 
 
@@ -227,20 +282,21 @@ namespace MHDBprototype01 {
 			this->exerLv2 = (gcnew System::Windows::Forms::RadioButton());
 			this->exerLv1 = (gcnew System::Windows::Forms::RadioButton());
 			this->memobox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
 			this->memo1 = (gcnew System::Windows::Forms::TextBox());
 			this->hozon = (gcnew System::Windows::Forms::Button());
 			this->showkai = (gcnew System::Windows::Forms::Button());
 			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
 			this->tabPageAdd = (gcnew System::Windows::Forms::TabPage());
+			this->buttonsqltest = (gcnew System::Windows::Forms::Button());
 			this->labelToday = (gcnew System::Windows::Forms::Label());
 			this->label6 = (gcnew System::Windows::Forms::Label());
 			this->tabPageShow = (gcnew System::Windows::Forms::TabPage());
-			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
-			this->label8 = (gcnew System::Windows::Forms::Label());
-			this->label7 = (gcnew System::Windows::Forms::Label());
+			this->label_avgMan = (gcnew System::Windows::Forms::Label());
+			this->label_maxMan = (gcnew System::Windows::Forms::Label());
 			this->ExRes = (gcnew System::Windows::Forms::Label());
 			this->HobRes = (gcnew System::Windows::Forms::Label());
 			this->label18 = (gcnew System::Windows::Forms::Label());
@@ -257,23 +313,25 @@ namespace MHDBprototype01 {
 			this->dateTimePicker2 = (gcnew System::Windows::Forms::DateTimePicker());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
 			this->textBoxMemoPage2 = (gcnew System::Windows::Forms::TextBox());
-			this->button2 = (gcnew System::Windows::Forms::Button());
-			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->buttonNext = (gcnew System::Windows::Forms::Button());
+			this->buttonBack = (gcnew System::Windows::Forms::Button());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->設定ToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->設定ToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
 			this->eatSF->SuspendLayout();
 			this->sleepSF->SuspendLayout();
 			this->jobSF->SuspendLayout();
 			this->hobbySF->SuspendLayout();
 			this->exerFS->SuspendLayout();
 			this->memobox1->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
 			this->tabControl1->SuspendLayout();
 			this->tabPageAdd->SuspendLayout();
 			this->tabPageShow->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
 			this->groupBox1->SuspendLayout();
 			this->menuStrip1->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// title1
@@ -644,6 +702,7 @@ namespace MHDBprototype01 {
 			// 
 			// memobox1
 			// 
+			this->memobox1->Controls->Add(this->dataGridView1);
 			this->memobox1->Controls->Add(this->memo1);
 			this->memobox1->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
@@ -653,6 +712,24 @@ namespace MHDBprototype01 {
 			this->memobox1->TabIndex = 7;
 			this->memobox1->TabStop = false;
 			this->memobox1->Text = L"memo";
+			// 
+			// chart1
+			// 
+			this->chart1->BorderlineColor = System::Drawing::Color::Black;
+			this->chart1->BorderlineDashStyle = System::Windows::Forms::DataVisualization::Charting::ChartDashStyle::Solid;
+			chartArea1->Name = L"ChartArea1";
+			this->chart1->ChartAreas->Add(chartArea1);
+			legend1->Name = L"Legend1";
+			this->chart1->Legends->Add(legend1);
+			this->chart1->Location = System::Drawing::Point(18, 102);
+			this->chart1->Name = L"chart1";
+			series1->ChartArea = L"ChartArea1";
+			series1->Legend = L"Legend1";
+			series1->Name = L"Series1";
+			this->chart1->Series->Add(series1);
+			this->chart1->Size = System::Drawing::Size(569, 286);
+			this->chart1->TabIndex = 10;
+			this->chart1->Text = L"Chart1";
 			// 
 			// memo1
 			// 
@@ -697,6 +774,7 @@ namespace MHDBprototype01 {
 			// 
 			// tabPageAdd
 			// 
+			this->tabPageAdd->Controls->Add(this->buttonsqltest);
 			this->tabPageAdd->Controls->Add(this->labelToday);
 			this->tabPageAdd->Controls->Add(this->label6);
 			this->tabPageAdd->Controls->Add(this->exerFS);
@@ -713,6 +791,16 @@ namespace MHDBprototype01 {
 			this->tabPageAdd->TabIndex = 0;
 			this->tabPageAdd->Text = L"登録";
 			this->tabPageAdd->UseVisualStyleBackColor = true;
+			// 
+			// buttonsqltest
+			// 
+			this->buttonsqltest->Location = System::Drawing::Point(332, 462);
+			this->buttonsqltest->Name = L"buttonsqltest";
+			this->buttonsqltest->Size = System::Drawing::Size(157, 46);
+			this->buttonsqltest->TabIndex = 12;
+			this->buttonsqltest->Text = L"button1";
+			this->buttonsqltest->UseVisualStyleBackColor = true;
+			this->buttonsqltest->Click += gcnew System::EventHandler(this, &MyForm::Buttonsqltest_Click);
 			// 
 			// labelToday
 			// 
@@ -738,8 +826,8 @@ namespace MHDBprototype01 {
 			this->tabPageShow->Controls->Add(this->label2);
 			this->tabPageShow->Controls->Add(this->label4);
 			this->tabPageShow->Controls->Add(this->label3);
-			this->tabPageShow->Controls->Add(this->label8);
-			this->tabPageShow->Controls->Add(this->label7);
+			this->tabPageShow->Controls->Add(this->label_avgMan);
+			this->tabPageShow->Controls->Add(this->label_maxMan);
 			this->tabPageShow->Controls->Add(this->ExRes);
 			this->tabPageShow->Controls->Add(this->HobRes);
 			this->tabPageShow->Controls->Add(this->label18);
@@ -755,8 +843,8 @@ namespace MHDBprototype01 {
 			this->tabPageShow->Controls->Add(this->dateTimePicker3);
 			this->tabPageShow->Controls->Add(this->dateTimePicker2);
 			this->tabPageShow->Controls->Add(this->groupBox1);
-			this->tabPageShow->Controls->Add(this->button2);
-			this->tabPageShow->Controls->Add(this->button1);
+			this->tabPageShow->Controls->Add(this->buttonNext);
+			this->tabPageShow->Controls->Add(this->buttonBack);
 			this->tabPageShow->Controls->Add(this->showkai);
 			this->tabPageShow->Location = System::Drawing::Point(4, 22);
 			this->tabPageShow->Name = L"tabPageShow";
@@ -765,24 +853,6 @@ namespace MHDBprototype01 {
 			this->tabPageShow->TabIndex = 1;
 			this->tabPageShow->Text = L"照会";
 			this->tabPageShow->UseVisualStyleBackColor = true;
-			// 
-			// chart1
-			// 
-			this->chart1->BorderlineColor = System::Drawing::Color::Black;
-			this->chart1->BorderlineDashStyle = System::Windows::Forms::DataVisualization::Charting::ChartDashStyle::Solid;
-			chartArea1->Name = L"ChartArea1";
-			this->chart1->ChartAreas->Add(chartArea1);
-			legend1->Name = L"Legend1";
-			this->chart1->Legends->Add(legend1);
-			this->chart1->Location = System::Drawing::Point(18, 102);
-			this->chart1->Name = L"chart1";
-			series1->ChartArea = L"ChartArea1";
-			series1->Legend = L"Legend1";
-			series1->Name = L"Series1";
-			this->chart1->Series->Add(series1);
-			this->chart1->Size = System::Drawing::Size(569, 286);
-			this->chart1->TabIndex = 10;
-			this->chart1->Text = L"Chart1";
 			// 
 			// label2
 			// 
@@ -811,25 +881,25 @@ namespace MHDBprototype01 {
 			this->label3->TabIndex = 9;
 			this->label3->Text = L"最高満足度　：";
 			// 
-			// label8
+			// label_avgMan
 			// 
-			this->label8->AutoSize = true;
-			this->label8->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->label8->Location = System::Drawing::Point(350, 71);
-			this->label8->Name = L"label8";
-			this->label8->Size = System::Drawing::Size(130, 14);
-			this->label8->TabIndex = 9;
-			this->label8->Text = L"(平均満足度が入る想定)";
+			this->label_avgMan->AutoSize = true;
+			this->label_avgMan->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_avgMan->Location = System::Drawing::Point(350, 71);
+			this->label_avgMan->Name = L"label_avgMan";
+			this->label_avgMan->Size = System::Drawing::Size(130, 14);
+			this->label_avgMan->TabIndex = 9;
+			this->label_avgMan->Text = L"(平均満足度が入る想定)";
 			// 
-			// label7
+			// label_maxMan
 			// 
-			this->label7->AutoSize = true;
-			this->label7->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->label7->Location = System::Drawing::Point(102, 71);
-			this->label7->Name = L"label7";
-			this->label7->Size = System::Drawing::Size(130, 14);
-			this->label7->TabIndex = 9;
-			this->label7->Text = L"(最高満足度が入る想定)";
+			this->label_maxMan->AutoSize = true;
+			this->label_maxMan->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_maxMan->Location = System::Drawing::Point(102, 71);
+			this->label_maxMan->Name = L"label_maxMan";
+			this->label_maxMan->Size = System::Drawing::Size(130, 14);
+			this->label_maxMan->TabIndex = 9;
+			this->label_maxMan->Text = L"(最高満足度が入る想定)";
 			// 
 			// ExRes
 			// 
@@ -951,6 +1021,7 @@ namespace MHDBprototype01 {
 			this->dateTimePicker3->Name = L"dateTimePicker3";
 			this->dateTimePicker3->Size = System::Drawing::Size(200, 19);
 			this->dateTimePicker3->TabIndex = 8;
+			this->dateTimePicker3->ValueChanged += gcnew System::EventHandler(this, &MyForm::DateTimePicker3_ValueChanged);
 			// 
 			// dateTimePicker2
 			// 
@@ -974,6 +1045,8 @@ namespace MHDBprototype01 {
 			// 
 			// textBoxMemoPage2
 			// 
+			this->textBoxMemoPage2->BackColor = System::Drawing::SystemColors::HighlightText;
+			this->textBoxMemoPage2->Enabled = false;
 			this->textBoxMemoPage2->ImeMode = System::Windows::Forms::ImeMode::NoControl;
 			this->textBoxMemoPage2->Location = System::Drawing::Point(19, 22);
 			this->textBoxMemoPage2->MaxLength = 300;
@@ -982,25 +1055,27 @@ namespace MHDBprototype01 {
 			this->textBoxMemoPage2->Size = System::Drawing::Size(518, 400);
 			this->textBoxMemoPage2->TabIndex = 0;
 			// 
-			// button2
+			// buttonNext
 			// 
-			this->button2->Location = System::Drawing::Point(445, 449);
-			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(96, 31);
-			this->button2->TabIndex = 6;
-			this->button2->Text = L"Next";
-			this->button2->UseVisualStyleBackColor = true;
-			this->button2->Click += gcnew System::EventHandler(this, &MyForm::Showkai_Click);
+			this->buttonNext->Enabled = false;
+			this->buttonNext->Location = System::Drawing::Point(445, 449);
+			this->buttonNext->Name = L"buttonNext";
+			this->buttonNext->Size = System::Drawing::Size(96, 31);
+			this->buttonNext->TabIndex = 6;
+			this->buttonNext->Text = L"Next";
+			this->buttonNext->UseVisualStyleBackColor = true;
+			this->buttonNext->Click += gcnew System::EventHandler(this, &MyForm::Next_Click);
 			// 
-			// button1
+			// buttonBack
 			// 
-			this->button1->Location = System::Drawing::Point(334, 449);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(96, 31);
-			this->button1->TabIndex = 6;
-			this->button1->Text = L"Back";
-			this->button1->UseVisualStyleBackColor = true;
-			this->button1->Click += gcnew System::EventHandler(this, &MyForm::Showkai_Click);
+			this->buttonBack->Enabled = false;
+			this->buttonBack->Location = System::Drawing::Point(334, 449);
+			this->buttonBack->Name = L"buttonBack";
+			this->buttonBack->Size = System::Drawing::Size(96, 31);
+			this->buttonBack->TabIndex = 6;
+			this->buttonBack->Text = L"Back";
+			this->buttonBack->UseVisualStyleBackColor = true;
+			this->buttonBack->Click += gcnew System::EventHandler(this, &MyForm::ButtonBack_Click);
 			// 
 			// menuStrip1
 			// 
@@ -1024,6 +1099,15 @@ namespace MHDBprototype01 {
 			this->設定ToolStripMenuItem1->Size = System::Drawing::Size(98, 22);
 			this->設定ToolStripMenuItem1->Text = L"設定";
 			// 
+			// dataGridView1
+			// 
+			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dataGridView1->Location = System::Drawing::Point(100, 112);
+			this->dataGridView1->Name = L"dataGridView1";
+			this->dataGridView1->RowTemplate->Height = 21;
+			this->dataGridView1->Size = System::Drawing::Size(525, 168);
+			this->dataGridView1->TabIndex = 1;
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
@@ -1036,6 +1120,7 @@ namespace MHDBprototype01 {
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
 			this->Activated += gcnew System::EventHandler(this, &MyForm::MyForm_Activated);
+			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->eatSF->ResumeLayout(false);
 			this->eatSF->PerformLayout();
 			this->sleepSF->ResumeLayout(false);
@@ -1048,21 +1133,39 @@ namespace MHDBprototype01 {
 			this->exerFS->PerformLayout();
 			this->memobox1->ResumeLayout(false);
 			this->memobox1->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->EndInit();
 			this->tabControl1->ResumeLayout(false);
 			this->tabPageAdd->ResumeLayout(false);
 			this->tabPageAdd->PerformLayout();
 			this->tabPageShow->ResumeLayout(false);
 			this->tabPageShow->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->EndInit();
 			this->groupBox1->ResumeLayout(false);
 			this->groupBox1->PerformLayout();
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
+
+	private:
+		//map
+		Dictionary<DateTime, String^>^ localDB;
+		//グローバル
+		DateTime GW_Date;
+		//カレント日付
+		DateTime^ GW_CurrentDate;
+
+		//メモ格納用
+		String^ GW_Memo;
+
+		//日付範囲格納用
+		List<DateTime>^ GW_DateRange;
+
+
+		//パラメータの値をグローバルに保持
 	private: System::Void DateTimePicker1_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 	}
 	private: System::Void EatLv1_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
@@ -1141,67 +1244,217 @@ namespace MHDBprototype01 {
 	private: System::Void ExerLv5_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 		hdbv.exerResult = v5;
 	}
+			 /******************************************************************************************
+			 ||||||||||||||||||||||||||書き出しボタンが押された時の処理||||||||||||||||||||||||||||||||
+			 ******************************************************************************************/
 	private: System::Void Button1_Click(System::Object^ sender, System::EventArgs^ e) {
-		//System::stream書き出しのテスト
-		System::IO::StreamWriter^ writer = gcnew System::IO::StreamWriter("C:\\Users\\yuya tagami\\Desktop\\MHDBTEXT.text", true);
-		writer->Write(DateTime::Now.ToString());
-		writer->Write(",");
-		writer->Write(hdbv.eatResult.ToString());
-		writer->Write(",");
-		writer->Write(hdbv.sleepResult.ToString());
-		writer->Write(",");
-		writer->Write(hdbv.jobResult.ToString());
-		writer->Write(",");
-		writer->Write(hdbv.hobResult.ToString());
-		writer->Write(",");
-		writer->Write(hdbv.exerResult.ToString());
-		writer->Write("\n");
-		writer->Close();
+		DateTime^ now = gcnew DateTime();
+		now = DateTime::Now.Date;
+		//データベースへ書き出し処理
+		if (!(localDB->ContainsKey(now->Date))) {
+			System::IO::StreamWriter^ writer = gcnew System::IO::StreamWriter("C:\\Users\\yuya tagami\\Desktop\\MHDBTEXT.text", true);
+			writer->Write(DateTime::Now.ToShortDateString());
+			writer->Write(",");
+			writer->Write(hdbv.eatResult.ToString());
+			writer->Write(",");
+			writer->Write(hdbv.sleepResult.ToString());
+			writer->Write(",");
+			writer->Write(hdbv.jobResult.ToString());
+			writer->Write(",");
+			writer->Write(hdbv.hobResult.ToString());
+			writer->Write(",");
+			writer->Write(hdbv.exerResult.ToString());
+			writer->Write("\n");
+			writer->Close();
 
-		//memo書き出しのテスト
-		String^ passID;
-		String^ pass;
-		passID = msclr::interop::marshal_as<System::String^>(GW_Date);
-		pass = pass->Format("C:\\Users\\yuya tagami\\Desktop\\MHDBMEMO{0:C}.text", passID);
-		System::IO::StreamWriter^ writerMemo = gcnew System::IO::StreamWriter(pass, true);
-		writerMemo->Write(DateTime::Now.ToString());
-		writerMemo->Write("\n");
-		writerMemo->Write(memo1->Text);
-		writerMemo->Write("\n");
-		writerMemo->Close();
+			//メモの書き出し処理
+			//パスのIDとなる日付用
+			String^ passID;
+			//パス
+			String^ pass;
+			passID = DateTime::Now.ToShortDateString();
+			passID = passID->Replace("/", "");
+			pass = pass->Format("C:\\Users\\yuya tagami\\Desktop\\MHDBMEMO{0:C}.text", passID);
+			System::IO::StreamWriter^ writerMemo = gcnew System::IO::StreamWriter(pass, true);
+			writerMemo->Write(DateTime::Now.ToString());
+			writerMemo->Write("\n");
+			writerMemo->Write(memo1->Text);
+			writerMemo->Write("\n");
+			writerMemo->Close();
 
-		//保存メッセージ
-		MessageBox::Show(pass + "に\r\n" + "食事満足度：" + hdbv.eatResult.ToString() + "\r\n"
-			+ "睡眠満足度：" + hdbv.sleepResult.ToString() + "\r\n"
-			+ "仕事満足度：" + hdbv.jobResult.ToString() + "\r\n"
-			+ "趣味満足度：" + hdbv.hobResult.ToString() + "\r\n"
-			+ "運動満足度：" + hdbv.exerResult.ToString() + "\r\n"
-			+ "↓メモ↓" + "\r\n" + memo1->Text
-			+ "を保存しました。");
+			//保存メッセージを出力
+			MessageBox::Show(pass + "に\r\n" + "食事満足度：" + hdbv.eatResult.ToString() + "\r\n"
+				+ "睡眠満足度：" + hdbv.sleepResult.ToString() + "\r\n"
+				+ "仕事満足度：" + hdbv.jobResult.ToString() + "\r\n"
+				+ "趣味満足度：" + hdbv.hobResult.ToString() + "\r\n"
+				+ "運動満足度：" + hdbv.exerResult.ToString() + "\r\n"
+				+ "↓メモ↓" + "\r\n" + memo1->Text
+				+ "を保存しました。");
+
+
+			//キーになる日付がマップに存在しなければマップへ追加
+
+			String^ stdata;
+			stdata = hdbv.sleepResult.ToString() + "," + hdbv.jobResult.ToString() + "," + hdbv.hobResult.ToString() + "," + hdbv.exerResult.ToString();
+			localDB->Add(now->Date, stdata);
+
+		}
+		else {
+			String^ Err;
+			Err = Err->Format("同じ日付のデータが既に存在します\nデータをメンテナンスしてください。");
+			MessageBox::Show(Err, "!!ERROR!!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		}
+
+
+
 	}
+			 /***********************************************************************************************************
+			 |||||||||||||||||||||||||||||||||メモが書き換えられた場合の処理||||||||||||||||||||||||||||||||||||||||||||
+			 ************************************************************************************************************/
 	private: System::Void Memo1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-		int countLen1 = 0;
-		countLen1 = memo1->Text->Length;
-		for (int i = 0; i < countLen1; i++) {
-			hdbv.memoResult[i] = memo1->Text[i];
+		//グローバルにメモを保持
+		GW_Memo = memo1->Text;
+	}
+
+			 /***********************************************************************************************************
+			  |||||||||||||||||||||||||||||||||照会ボタンが押された場合の処理||||||||||||||||||||||||||||||||||||||||||||
+			  ************************************************************************************************************/
+	private: System::Void Showkai_Click(System::Object^ sender, System::EventArgs^ e) {
+
+		DateTime^ selectedDate;
+		int testFlg = 1;
+
+		//dateTimePicker2の日付をカレントDateに設定
+		for each (KeyValuePair<DateTime, String^> ^ i in localDB) {
+			selectedDate = i->Key;
+			for each (DateTime p in GW_DateRange) {
+				//最大最小満足度を設定
+				if (p.Equals(selectedDate)) {
+					GW_CurrentDate = selectedDate;
+					testFlg = 0;
+					break;
+				}
+			}
+			if (testFlg == 0) {
+				break;
+			}
+		}
+
+		//データセットメソッドの呼び出し
+		testFlg = setData();
+
+		//セットメソッドの戻り値によってNext/Backボタンを有効化/無効化制御
+		if (testFlg == 0) {
+			buttonBack->Enabled = true;
+			buttonNext->Enabled = true;
+		}
+		else {
+			buttonBack->Enabled = false;
+			buttonNext->Enabled = false;
+		}
+
+		/***********************************************************************************************************
+		|||||||||||||||||||||||||||||||||チャートコントロールテスト|||||||||||||||||||||||||||||||||||||||||||||||||
+		************************************************************************************************************/
+		chart1.Titles.Clear();
+
+	}
+
+			 /***********************************************************************************************************
+			 |||||||||||||||||||||||||||||||||メインフォームがアクティブになった時の初期処理|||||||||||||||||||||||||||||
+			 ************************************************************************************************************/
+	private: System::Void MyForm_Activated(System::Object^ sender, System::EventArgs^ e) {
+
+	}
+
+			 /***********************************************************************************************************
+			 |||||||||||||||||||||||||||||||||最小日付範囲の値が更新された場合の処理|||||||||||||||||||||||||||||||||||||
+			 ************************************************************************************************************/
+	private: System::Void DateTimePicker2_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
+		//カレントDateの値を更新
+		DateTime^ LW_Date = gcnew DateTime();
+		LW_Date = dateTimePicker2->Value;
+		GW_CurrentDate = LW_Date->Date;
+
+		//日付範囲の更新
+		if (dateTimePicker2->Value <= dateTimePicker3->Value) {
+			GW_DateRange->Clear();
+			DateTime^ LW_Date2 = gcnew DateTime();
+			DateTime^ LW_Date3 = gcnew DateTime();
+			LW_Date2 = dateTimePicker2->Value;
+			LW_Date3 = dateTimePicker3->Value;
+			while (LW_Date2->Date != LW_Date3->Date) {
+				GW_DateRange->Add(LW_Date2->Date);
+				LW_Date2 = LW_Date2->AddDays(1);
+			}
+			if (!GW_DateRange->Contains(LW_Date3->Date)) {
+				GW_DateRange->Add(LW_Date3->Date);
+			}
+		}
+		else {
+			MessageBox::Show("日付範囲の最小値が最大値を上回っています。", "入力値不正", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 	}
-	private: System::Void Showkai_Click(System::Object^ sender, System::EventArgs^ e) {
-		//System::stream読み込みのテスト
+			 /***********************************************************************************************************
+			 |||||||||||||||||||||||||||||||||Nextボタンが押された場合の処理|||||||||||||||||||||||||||||||||||||||||||||
+			 ************************************************************************************************************/
+	private: System::Void Next_Click(System::Object^ sender, System::EventArgs^ e) {
+		//DBマップを検索し、該当した場合、次のレコードをカレントDateに設定
+		DateTime^ selectedDate;
+		int testFlg = 1;
+
+		//dateTimePicker2の日付をカレントDateに設定
+		for each (KeyValuePair<DateTime, String^> ^ i in localDB) {
+			selectedDate = i->Key;
+			if (GW_CurrentDate->Equals(selectedDate)) {
+				if (GW_DateRange->Contains(selectedDate->Date)) {
+					testFlg = 0;
+					continue;
+				}
+			}
+			if (testFlg == 0) {
+				GW_CurrentDate = selectedDate;
+				break;
+			}
+		}
+		//セットメソッドを呼び出す
+		setData();
+	}
+			 /***********************************************************************************************************
+			 |||||||||||||||||||||||||||||||||******************************|||||||||||||||||||||||||||||||||||||||||||||
+			 ************************************************************************************************************/
+	private: System::Void DataGridView1_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+	}
+			 /***********************************************************************************************************
+			 |||||||||||||||||||||||||||||||||フォームがロードされた場合の処理（初期処理）|||||||||||||||||||||||||||||||
+			 ************************************************************************************************************/
+	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
+		//静的インスタンスの生成（グローバルインスタンス）
+		//内部DBマップ
+		localDB = gcnew Dictionary<DateTime, String^>;
+		//メモの読み込み用
+		GW_Memo = gcnew String("");
+
+		GW_CurrentDate = gcnew DateTime();
+
+		//日付範囲格納用
+		GW_DateRange = gcnew List<DateTime>;
+
+		//GW_Dateに本日日付を設定
+		DateTime^ LW_Date;
+		LW_Date = DateTime::Now;
+		GW_Date = LW_Date->Date;
+		dateTimePicker2->Value = LW_Date->Date;
+		dateTimePicker3->Value = LW_Date->Date;
+		labelToday->Text = GW_Date.ToShortDateString();
+
+		//パラメータデータの初期読み込み
 		System::String^ strLine;
 		System::String^ strDeliminater = ",";
 		array<wchar_t>^ deliminater = strDeliminater->ToCharArray();
 		array<System::String^>^ strData;
 		DateTime^ checkDate1;
-		DateTime^ onlyDate;
-		DateTime^ selectedDate;
-		DateTime^ selectedOnlyDate;
-		System::String^ Err;
-		int CountDNum = 0;
 
-		selectedDate = dateTimePicker2->Value;
-		selectedOnlyDate = selectedDate->Date;
-		System::String^ checkData2;
 		try {
 			System::IO::StreamReader^ reader = gcnew System::IO::StreamReader("C:\\Users\\yuya tagami\\Desktop\\MHDBTEXT.text");
 			if (!reader->EndOfStream) {
@@ -1209,37 +1462,14 @@ namespace MHDBprototype01 {
 					strLine = reader->ReadLine();
 					strData = strLine->Split(deliminater);
 					checkDate1 = DateTime::Parse(strData[0]);
-					onlyDate = checkDate1->Date;
-					if (onlyDate->Equals(selectedOnlyDate)) {
-						if (CountDNum == 0) {
-							labelCarentDate->Text = strData[0];
-							ShokujiRes->Text = strData[1];
-							SleepRes->Text = strData[2];
-							JobRes->Text = strData[3];
-							HobRes->Text = strData[4];
-							ExRes->Text = strData[5];
-							CountDNum++;
 
-							//カレント日付の設定
-							String^ LW_DateStr = gcnew String("");
-							DateTime^ LW_Date = gcnew DateTime();
-							LW_Date = checkDate1->Date;
-							String^ DateStr = LW_Date->ToShortDateString();
-							LW_DateStr = DateStr->Replace("/", "");
-							GW_CurrentDate = msclr::interop::marshal_as<std::string>(LW_DateStr);
-						}
-						else {
-							CountDNum++;
-						}
+					//キーになる日付がマップに存在しなければマップへ追加
+					if (!localDB->ContainsKey(checkDate1->Date)) {
+						String^ stdata;
+						stdata = strData[1] + "," + strData[2] + "," + strData[3] + "," + strData[4] + "," + strData[5];
+						localDB->Add(checkDate1->Date, stdata);
 					}
 				}
-			}
-			if (CountDNum >= 2) {
-				Err = Err->Format("データが複数存在します\nデータをメンテナンスしてください。{0:N0}件のレコードが存在\n※一件目のレコードを表示します", CountDNum);
-				MessageBox::Show(Err, "!!ERROR!!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-			}
-			else if (CountDNum == 0) {
-				MessageBox::Show("対象のデータが存在しません", "ERROER", MessageBoxButtons::OK, MessageBoxIcon::Information);
 			}
 			reader->Close();
 		}
@@ -1247,56 +1477,234 @@ namespace MHDBprototype01 {
 			System::IO::File::AppendAllText("C:\\Users\\yuya tagami\\Desktop\\MHDBTEXT.text", "");
 			System::Diagnostics::Debug::WriteLine("---エラーメッセージ---\n" + ex->Message);
 		}
-		//memoの読み込み
-		String^ memoStr;
-		try {
-			String^ passID;
-			String^ pass;
-			passID = msclr::interop::marshal_as<System::String^>(GW_CurrentDate);
-			pass = pass->Format("C:\\Users\\yuya tagami\\Desktop\\MHDBMEMO{0:C}.text", passID);
-			System::IO::StreamReader^ memoReader = gcnew System::IO::StreamReader(pass);
-			if (!memoReader->EndOfStream) {
-				strLine = "";
-				int count = 0;
-				while (memoReader->Peek() >= 0) {
-					if (count == 0) {
-						strLine = memoReader->ReadLine();
-						memoStr = memoStr + strLine;
-						count++;
+		//内部DBマップに本日日付のデータが存在した場合、登録画面にコメントを挿入し、入力不可にする。
+		if (localDB->ContainsKey(GW_Date)) {
+			String^ alreadyHereInData = ("今日のデータはすでに登録されています。\r\n修正する場合は更新画面で修正してください。");
+			memo1->Enabled = false;
+			memo1->Text = alreadyHereInData;
+			hozon->Enabled = false;
+			eatSF->Enabled = false;
+			sleepSF->Enabled = false;
+			jobSF->Enabled = false;
+			hobbySF->Enabled = false;
+			exerFS->Enabled = false;
+		}
+	}
+			 /***********************************************************************************************************
+			 |||||||||||||||||||||||||||||||||セットメソッド|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+			 **内部データベースマップにカレントDateの日付が存在した場合、パラメータをセットし、メモを読み込む**
+			 ************************************************************************************************************/
+	private: int setData() {
+		//System::stream読み込みのテスト
+		System::String^ strLine;
+		System::String^ strDeliminater = ",";
+		array<wchar_t>^ deliminater = strDeliminater->ToCharArray();
+		array<System::String^>^ strData;
+		DateTime^ onlyDate;
+		int flg_sonzai = 1;
+
+
+		//内部DBマップの読み込み
+		for each (KeyValuePair<DateTime, String^> ^ i in localDB) {
+			onlyDate = i->Key;
+			//内部DBマップにカレントDateのデータが存在する場合、パラメータを各ラベルに代入し、存在フラグをオン
+			if (onlyDate->Equals(GW_CurrentDate)) {
+				//カンマ区切りのパラメータ情報を分割し、ラベルにセット
+				strData = i->Value->Split(deliminater);
+				labelCarentDate->Text = onlyDate->ToShortDateString();
+				ShokujiRes->Text = strData[0];
+				SleepRes->Text = strData[1];
+				JobRes->Text = strData[2];
+				HobRes->Text = strData[3];
+				ExRes->Text = strData[4];
+
+				//データ存在フラグをオン
+				flg_sonzai = 0;
+			}
+		}
+
+		//memoの読み込み処理
+		//データ存在フラグがオンの場合のみメモデータを読み込む
+		if (flg_sonzai == 0) {
+			String^ memoStr;
+			try {
+				String^ passID;
+				String^ pass;
+				passID = GW_CurrentDate->ToShortDateString();
+				passID = passID->Replace("/", "");
+				pass = pass->Format("C:\\Users\\yuya tagami\\Desktop\\MHDBMEMO{0:C}.text", passID);
+				System::IO::StreamReader^ memoReader = gcnew System::IO::StreamReader(pass);
+				if (!memoReader->EndOfStream) {
+					strLine = "";
+					int count = 0;
+					while (memoReader->Peek() >= 0) {
+						if (count == 0) {
+							strLine = memoReader->ReadLine();
+							memoStr = memoStr + strLine;
+							count++;
+						}
+						else {
+							strLine = memoReader->ReadLine();
+							memoStr = memoStr + "\r\n" + strLine;
+						}
 					}
-					else {
-						strLine = memoReader->ReadLine();
-						memoStr = memoStr + "\r\n" + strLine;
+					textBoxMemoPage2->Text = memoStr;
+				}
+				memoReader->Close();
+			}
+			catch (System::IO::FileNotFoundException^ ex) {
+				System::IO::File::AppendAllText("C:\\Users\\yuya tagami\\Desktop\\MHDBTEXT.text", "");
+				System::Diagnostics::Debug::WriteLine("---エラーメッセージ---\n" + ex->Message);
+			}
+		}
+
+		//最大最小満足度を設定
+		Double resultAvg = 0;
+		int countDB = 0;
+		label_maxMan->Text = "0";
+		Int32 maxIntLabel = int::Parse(label_maxMan->Text);
+		if (flg_sonzai == 0) {
+			for each (KeyValuePair<DateTime, String^> ^ i in localDB) {
+				onlyDate = i->Key;
+				Int32 resultMax = 0;
+
+				int LW_EatMan = 0, LW_SleepMan = 0, LW_JobMan = 0, LW_HobMan = 0, LW_ExMan = 0;
+
+				//内部DBマップにカレントDateのデータが存在する場合、パラメータを各ラベルに代入し、存在フラグをオン
+				if (GW_DateRange->Contains(onlyDate->Date)) {
+					//カンマ区切りのパラメータ情報を分割し、ラベルにセット
+					strData = i->Value->Split(deliminater);
+					LW_EatMan = int::Parse(strData[0]);
+					LW_SleepMan = int::Parse(strData[1]);
+					LW_JobMan = int::Parse(strData[2]);
+					LW_HobMan = int::Parse(strData[3]);
+					LW_ExMan = int::Parse(strData[4]);
+
+					resultMax = LW_EatMan + LW_SleepMan + LW_JobMan + LW_HobMan + LW_ExMan;
+					countDB++;
+					resultAvg = resultAvg + resultMax;
+					if (GW_CurrentDate->Equals(onlyDate->Date)) {
+						label_maxMan->Text = resultMax.ToString();
 					}
 				}
-				textBoxMemoPage2->Text = memoStr;
 			}
-			memoReader->Close();
+			resultAvg = resultAvg / countDB;
+			label_avgMan->Text = resultAvg.ToString();
+			return 0;
 		}
-		catch (System::IO::FileNotFoundException^ ex) {
-			System::IO::File::AppendAllText("C:\\Users\\yuya tagami\\Desktop\\MHDBTEXT.text", "");
-			System::Diagnostics::Debug::WriteLine("---エラーメッセージ---\n" + ex->Message);
+
+		//カレントDateのデータが内部DBマップに存在しなかった場合、エラーメッセージを出力し、エラーコードを呼び出し元に返す
+		if (flg_sonzai == 1) {
+			String^ Err;
+			Err = Err->Format("選択された日付のデータが存在しません");
+			MessageBox::Show(Err, "!!ERROR!!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+			return 1;
 		}
 	}
-	private: System::Void MyForm_Activated(System::Object^ sender, System::EventArgs^ e) {
-		String^ LW_DateStr = gcnew String("");
-		DateTime^ LW_Date = gcnew DateTime();
-		LW_Date = DateTime::Now;
-		labelToday->Text = LW_Date->ToShortDateString();
-		String^ DateStr = LW_Date->ToShortDateString();
-		LW_DateStr = DateStr->Replace("/", "");
-		GW_Date = msclr::interop::marshal_as<std::string>(LW_DateStr);
-		GW_CurrentDate = msclr::interop::marshal_as<std::string>(LW_DateStr);
+			 /***********************************************************************************************************
+			 |||||||||||||||||||||||||||||||||Backボタンが押された場合の処理|||||||||||||||||||||||||||||||||||||||||||||
+			 ************************************************************************************************************/
+	private: System::Void ButtonBack_Click(System::Object^ sender, System::EventArgs^ e) {
+		//DBマップを検索し、該当した場合、次のレコードをカレントDateに設定
+		DateTime^ selectedDate;
+		DateTime^ taihiDate;
+		int flg_sonzai = 1;
+
+		//dateTimePicker2の日付をカレントDateに設定
+		for each (KeyValuePair<DateTime, String^> ^ i in localDB) {
+			selectedDate = i->Key;
+			if (GW_DateRange->Contains(selectedDate->Date)) {
+				if (GW_CurrentDate->Equals(selectedDate)) {
+					if (taihiDate != nullptr) {
+						GW_CurrentDate = taihiDate;
+						break;
+					}
+				}
+			}
+			if (GW_DateRange->Contains(selectedDate->Date)) {
+				taihiDate = i->Key;
+			}
+		}
+		//セットメソッドを呼び出す
+		setData();
 	}
-	private: System::Void DateTimePicker2_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
-		//コメントを追記※gitの練習
-		//コメントを追記※gitの練習
-		String^ LW_DateStr = gcnew String("");
+			 /***********************************************************************************************************
+			 |||||||||||||||||||||||||||||||||最大日付範囲の値が更新された場合の処理||||||||||||||||||||||||||||||||||||||
+			 ************************************************************************************************************/
+	private: System::Void DateTimePicker3_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
+		//カレントDateの値を更新
 		DateTime^ LW_Date = gcnew DateTime();
 		LW_Date = dateTimePicker2->Value;
-		String^ DateStr = LW_Date->ToShortDateString();
-		LW_DateStr = DateStr->Replace("/", "");
-		GW_CurrentDate = msclr::interop::marshal_as<std::string>(LW_DateStr);
+		GW_CurrentDate = LW_Date->Date;
+
+		//日付範囲の更新
+		if (dateTimePicker2->Value <= dateTimePicker3->Value) {
+			GW_DateRange->Clear();
+			DateTime^ LW_Date2 = gcnew DateTime();
+			DateTime^ LW_Date3 = gcnew DateTime();
+			LW_Date2 = dateTimePicker2->Value;
+			LW_Date3 = dateTimePicker3->Value;
+			while (LW_Date2->Date <= LW_Date3->Date) {
+				GW_DateRange->Add(LW_Date2->Date);
+				LW_Date2 = LW_Date2->AddDays(1);
+			}
+			if (!GW_DateRange->Contains(LW_Date3->Date)) {
+				GW_DateRange->Add(LW_Date3->Date);
+			}
+		}
+		else {
+			MessageBox::Show("日付範囲の最小値が最大値を上回っています。", "入力値不正", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		}
+	}
+	private: System::Void Buttonsqltest_Click(System::Object^ sender, System::EventArgs^ e) {
+		////+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		////||||||||||||||||**DB連携テスト**|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+		//////MySQL連携テスト
+		//////サーバー接続
+		//System::String^ connstr = "userid = hdbuser; password = 'password'; database = hdb; Host = 192.168.0.100";
+		/////System::String^ connstr = "userid = root; password = ''; database = HealthDB; Host = localhost";
+		//MySqlConnection^ conn = gcnew MySqlConnection(connstr);
+		//conn->Open();
+
+		////// データを格納するテーブル作成
+		//DataTable^ dt = gcnew DataTable();
+
+		////// SQL文と接続情報を指定し、データアダプタを作成
+		//MySqlDataAdapter^ da = gcnew MySqlDataAdapter("select * from parameters", conn);
+
+		////// データ取得
+		//da->Fill(dt);
+
+		////// データ表示
+		//dataGridView1->DataSource = dt;
+
+		////// insert
+		////String^ sql = gcnew String("insert into parameters values (20200403,1,1,1,1,1);");
+		//String^ sql = gcnew String("");
+		//String^ date  = "20300103";
+		//String^ eat   = "5";
+		//String^ sleep = "5";
+		//String^ job   = "5";
+		//String^ hob   = "5";
+		//String^ excer = "5";
+		//sql = sql->Format("insert into parameters values({0:C}, {1:C}, {2:C}, {3:C}, {4:C}, {5:C}); ", date, eat, sleep, job, hob, excer);
+
+		////MySqlDataAdapter^ db = gcnew MySqlDataAdapter("insert into parameters values (20200404,1,1,1,1,1);", conn);
+		//MySqlCommand^ cmd = gcnew MySqlCommand(sql, conn);
+		////cmd->Connection->Open();
+		//cmd->ExecuteNonQuery();
+		////cmd->Connection->Close();
+
+		//MySqlDataAdapter^ dc = gcnew MySqlDataAdapter("select * from parameters", conn);
+
+		////// データ取得
+		//dt->Clear();
+		//dc->Fill(dt);
+
+		////// データ表示
+		//dataGridView1->DataSource = dt;
+		////+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	}
 	};
 }
+
